@@ -71,11 +71,22 @@ function renderCreatureCard(creature, participant = {}) {
                 </p>
 
                 <section class="creature-card__owner">
-                    <p class="creature-card__owner-label">
-                        Creature Unlocked By
-                    </p>
-                    <p class="creature-card__owner-name">${safeName}</p>
-                    <p class="creature-card__owner-college">${safeCollege}</p>
+                    <div class="creature-card__owner-body">
+                        <div class="creature-card__owner-info">
+                            <p class="creature-card__owner-label">
+                                Creature Unlocked By
+                            </p>
+                            <p class="creature-card__owner-name">${safeName}</p>
+                            <p class="creature-card__owner-college">${safeCollege}</p>
+                        </div>
+                        <div class="creature-card__owner-badge">
+                            <img
+                                class="creature-card__tss-logo"
+                                src="./Assets/Other Assets/TSS_Logo.png"
+                                alt="TSS Logo"
+                            >
+                        </div>
+                    </div>
                 </section>
 
                 <footer class="creature-card__footer">
