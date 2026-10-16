@@ -1,7 +1,7 @@
 
 /* =========================================
    ASTRAKSH — MAIN APPLICATION CONTROLLER
-   With 3-Roll Chance Constraint & Persistence
+   With 3-Roll Chance Constraint & Form Validation
 ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const STORAGE_KEY_NAME = "astraksh_participant_name";
     const STORAGE_KEY_COLLEGE = "astraksh_participant_college";
 
-    // Expose quick reset function on window for easy developer testing in console
+    // Expose quick reset function on window for testing in console
     window.resetChances = () => {
         localStorage.removeItem(STORAGE_KEY_CHANCES);
         localStorage.removeItem(STORAGE_KEY_CREATURE);
@@ -40,12 +40,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const creatureResult = document.querySelector("#creature-result");
     const personalizeSection = document.querySelector("#personalize");
 
-    const participantForm = document.querySelector("#participant-form");
     const participantNameInput = document.querySelector("#participant-name");
     const collegeNameInput = document.querySelector("#college-name");
 
     const downloadActions = document.querySelector("#download-actions");
     const downloadButton = document.querySelector("#download-btn");
+    const downloadPreviewNote = document.querySelector(".download-card-preview-note");
 
     let selectedCreature = null;
 
@@ -62,6 +62,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
+     * Validates that both participant name and college are filled.
+     * Toggles the download button enabled/disabled state accordingly.
+     */
+    function validateParticipantDetails() {
+        const name = participantNameInput?.value.trim() || "";
+        const college = collegeNameInput?.value.trim() || "";
+        const isComplete = name.length > 0 && college.length > 0;
+
+        if (downloadButton) {
+            if (!isComplete) {
+                downloadButton.disabled = true;
+                downloadButton.innerHTML =
+                    '<span class="download-icon" aria-hidden="true">🔒</span><span>Enter Details to Download</span>';
+                if (downloadPreviewNote) {
+                    downloadPreviewNote.innerHTML =
+                        '<span style="color: var(--color-primary-light);">✍ Enter your name & college above to unlock card download</span>';
+                }
+            } else {
+                downloadButton.disabled = false;
+                downloadButton.innerHTML =
+                    '<span class="download-icon" aria-hidden="true">📥</span><span>Download My Card</span>';
+                if (downloadPreviewNote) {
+                    downloadPreviewNote.innerHTML =
+                        '<span>✨ Ready to save your high-resolution card</span>';
+                }
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
      * Updates the UI elements reflecting chances left.
      */
     function updateChancesUI(chances) {
@@ -69,11 +101,10 @@ document.addEventListener("DOMContentLoaded", () => {
             chancesCount.textContent = `${chances}/${MAX_CHANCES}`;
         }
 
-        // Update pip indicators
+        // Update pip indicators cleanly without invalid selector calls
         for (let i = 1; i <= MAX_CHANCES; i++) {
-            const pip = document.querySelector(`#pip-1, #pip-2, #pip-3`[i - 1] ? document.querySelector(`#pip-${i}`) : null);
+            const pip = document.querySelector(`#pip-${i}`);
             if (pip) {
-                // If chances is 2: pip-3 is used, pip-1 and pip-2 active
                 if (i > chances) {
                     pip.classList.add("used");
                 } else {
@@ -90,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 '<span>No Chances Left (0/3)</span> <span class="btn-symbol" aria-hidden="true">🔒</span>';
             if (selectedCreature && statusMessage) {
                 statusMessage.innerHTML =
-                    '✦ All 3 chances used! Your legend is sealed. Inscribe your details and download your card.';
+                    '✦ All 3 chances used! Inscribe your details below and download your card.';
             }
         } else if (selectedCreature) {
             generateButton.disabled = false;
@@ -122,11 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
     participantNameInput?.addEventListener("input", () => {
         updateCardIdentity();
         localStorage.setItem(STORAGE_KEY_NAME, participantNameInput.value);
+        validateParticipantDetails();
     });
 
     collegeNameInput?.addEventListener("input", () => {
         updateCardIdentity();
         localStorage.setItem(STORAGE_KEY_COLLEGE, collegeNameInput.value);
+        validateParticipantDetails();
     });
 
     // Handle creature awakening
@@ -172,11 +205,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     `✦ Awakened <strong>${selectedCreature.name}</strong> (${tierRarity})! ${chances} chance${chances === 1 ? '' : 's'} remaining.`;
             } else {
                 statusMessage.innerHTML =
-                    `✦ Awakened <strong>${selectedCreature.name}</strong> (${tierRarity})! All chances used — your mythic guardian is sealed!`;
+                    `✦ Awakened <strong>${selectedCreature.name}</strong> (${tierRarity})! All 3 chances used — your mythic guardian is sealed!`;
             }
 
             // Update button and counter UI
             updateChancesUI(chances);
+
+            // Validate details to set initial download button state
+            validateParticipantDetails();
 
             // Smooth scroll into view
             creatureResult.scrollIntoView({
@@ -192,43 +228,21 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Handle form submit (Personalize button)
-    participantForm?.addEventListener("submit", (event) => {
-        event.preventDefault();
-
-        if (!selectedCreature) {
-            statusMessage.textContent =
-                "Please awaken a creature before personalizing your card.";
-            return;
-        }
-
-        const participantName = participantNameInput.value.trim() || "Legend";
-        const collegeName = collegeNameInput.value.trim() || "AstraKsh Realm";
-
-        localStorage.setItem(STORAGE_KEY_NAME, participantName);
-        localStorage.setItem(STORAGE_KEY_COLLEGE, collegeName);
-
-        renderCreatureCard(selectedCreature, {
-            name: participantName,
-            college: collegeName
-        });
-
-        if (downloadActions) downloadActions.hidden = false;
-
-        statusMessage.innerHTML =
-            `✦ Card personalized for <strong>${participantName}</strong>! Ready to download.`;
-
-        downloadButton?.scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-        });
-    });
-
     // Download the personalized card as a PNG
     downloadButton?.addEventListener("click", async () => {
         if (!selectedCreature) {
-            statusMessage.textContent =
-                "Awaken a creature before downloading your card.";
+            if (statusMessage) {
+                statusMessage.textContent = "Awaken a creature before downloading your card.";
+            }
+            return;
+        }
+
+        if (!validateParticipantDetails()) {
+            if (participantNameInput && !participantNameInput.value.trim()) {
+                participantNameInput.focus();
+            } else if (collegeNameInput) {
+                collegeNameInput.focus();
+            }
             return;
         }
 
@@ -236,8 +250,9 @@ document.addEventListener("DOMContentLoaded", () => {
             await downloadCreatureCard();
         } catch (error) {
             console.error("Card download failed:", error);
-            statusMessage.textContent =
-                "Unable to download your card. Please try again.";
+            if (statusMessage) {
+                statusMessage.textContent = "Unable to download your card. Please try again.";
+            }
         }
     });
 
@@ -288,5 +303,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Sync UI with current chances
         updateChancesUI(chances);
+
+        // Validate participant details to ensure download button is appropriately locked
+        validateParticipantDetails();
     })();
 });
