@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+        content="Discover your mythical creature in AstraKsh, an Indian mythology-inspired creature universe. Unlock your legend and create your own collectible card.">
+
+    <meta name="theme-color" content="#0C0A10">
+
+    <title>AstraKsh — Awaken Your Legend</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="./Assets/Other Assets/Logo.png">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/cards.css">
+    <link rel="stylesheet" href="./css/animations.css">
+</head>
+
+<body>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero container" id="home">
+            <div class="hero-badge">
+                <span class="badge-icon">✦</span>
+                <span>AN INDIAN MYTH-INSPIRED UNIVERSE</span>
+                <span class="badge-icon">✦</span>
+            </div>
+
+            <div class="hero-logo-wrapper">
+                <img src="./Assets/Other Assets/Logo.png" alt="ASTRAKSH — Awaken Your Legend" class="hero-logo">
+            </div>
+
+            <p class="hero-description">
+                From ancient forest guardians to celestial astras of infinite power.
+                Awaken your mythic companion, claim your participant identity, and forge a collectible ID card.
+            </p>
+
+            <div class="hero-actions">
+                <a href="#discover" class="btn btn-primary hero-btn">
+                    <span>Awaken Your Creature</span>
+                    <span class="btn-symbol" aria-hidden="true">✧</span>
+                </a>
+                <a href="#tiers" class="btn btn-secondary">
+                    <span>View Realms</span>
+                </a>
+            </div>
+
+            <div class="hero-pills">
+                <span class="pill-item">✦ 9 Mythic Guardians</span>
+                <span class="pill-sep">•</span>
+                <span class="pill-item">3 Power Tiers</span>
+                <span class="pill-sep">•</span>
+                <span class="pill-item">Instant PNG Export ✦</span>
+            </div>
+        </section>
+
+        <!-- Tier Overview -->
+        <section class="tiers-section container" id="tiers">
+            <div class="section-heading">
+                <p class="eyebrow">THREE REALMS OF POWER</p>
+                <h2>Choose Your Destiny</h2>
+                <p>
+                    From guardians of primordial forests to beings of cosmic infinity.
+                </p>
+            </div>
+
+            <div class="tiers-grid">
+                <article class="tier-card tier-prakriti">
+                    <div class="tier-badge-wrap">
+                        <span class="tier-number">01</span>
+                        <span class="tier-rarity">COMMON · 60%</span>
+                    </div>
+                    <h3>Prakriti</h3>
+                    <p class="tier-subtitle">Nature & Elements</p>
+                    <p>
+                        Elemental guardians of rivers, monsoons, and sacred ancient woods like Dandaka.
+                    </p>
+                    <div class="tier-glow-bar"></div>
+                </article>
+
+                <article class="tier-card tier-veer">
+                    <div class="tier-badge-wrap">
+                        <span class="tier-number">02</span>
+                        <span class="tier-rarity">RARE · 30%</span>
+                    </div>
+                    <h3>Veer</h3>
+                    <p class="tier-subtitle">Heroic Legends</p>
+                    <p>
+                        Formidable warriors inspired by Gandiva, battle formations, and epic chariot charges.
+                    </p>
+                    <div class="tier-glow-bar"></div>
+                </article>
+
+                <article class="tier-card tier-divya">
+                    <div class="tier-badge-wrap">
+                        <span class="tier-number">03</span>
+                        <span class="tier-rarity">LEGENDARY · 10%</span>
+                    </div>
+                    <h3>Divya</h3>
+                    <p class="tier-subtitle">Celestial Cosmic</p>
+                    <p>
+                        Extraordinary astras radiating divine barriers and manipulating cosmic cycles.
+                    </p>
+                    <div class="tier-glow-bar"></div>
+                </article>
+            </div>
+        </section>
+
+        <!-- Creature Discovery (Altar of Awakening) -->
+        <section class="discover-section container" id="discover">
+            <div class="section-heading">
+                <p class="eyebrow">THE SACRED ALTAR</p>
+                <h2>Awaken Your Creature</h2>
+                <p>
+                    Summon your mythical companion from the celestial realms.
+                </p>
+            </div>
+
+            <div class="discover-panel">
+                <div class="altar-disc" aria-hidden="true">
+                    <div class="altar-disc-inner">
+                        <span class="discover-symbol">✦</span>
+                    </div>
+                </div>
+
+                <h3>Your Legend Awaits</h3>
+
+                <p>
+                    Draw upon ancient astras to reveal your creature's rarity,
+                    legendary ability, and mythological heritage.
+                </p>
+
+                <button type="button" class="btn btn-primary btn-altar" id="generate-btn">
+                    <span>Awaken My Creature</span>
+                    <span class="btn-symbol" ar ia-hidden="true">✧</span>
+                </button>
+
+                <div class="chances-tracker" id="chances-tracker" aria-label="Awakening chances remaining">
+                    <span class="chances-label">Awakening Chances:</span>
+                    <span class="chances-pills" id="chances-pills" aria-hidden="true">
+                        <span class="chance-pip" id="pip-1"></span>
+                        <span class="chance-pip" id="pip-2"></span>
+                        <span class="chance-pip" id="pip-3"></span>
+                    </span>
+                    <span class="chances-count" id="chances-count">3/3</span>
+                </div>
+
+                <div class="status-wrapper">
+                    <p class="status-message" id="status-message" aria-live="polite">
+                        Your mythical journey begins with a single summon.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Generated creature preview will be rendered here -->
+            <div class="creature-result" id="creature-result" aria-live="polite" hidden>
+                <div id="creature-card-container"></div>
+            </div>
+        </section>
+
+        <!-- Personalize Your Card -->
+        <section class="personalize-section container" id="personalize" hidden>
+            <div class="section-heading">
+                <p class="eyebrow">IDENTITY & FORGE</p>
+                <h2>Inscribe Your Legend</h2>
+                <p>
+                    Add your name and college to complete your collectible AstraKsh ID card.
+                </p>
+            </div>
+
+            <div class="personalize-wrapper">
+                <form id="participant-form" class="participant-form">
+                    <div class="form-header">
+                        <span class="form-icon">✍</span>
+                        <h4>Participant Identity</h4>
+                        <p class="form-hint">Card updates live as you type</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="participant-name">Your Full Name</label>
+                        <input type="text" id="participant-name" name="participantName" placeholder="e.g. Shrihari"
+                            maxlength="40" autocomplete="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="college-name">College / Institution</label>
+                        <input type="text" id="college-name" name="collegeName" placeholder="e.g. KLS VDIT, Haliyal"
+                            maxlength="80" autocomplete="organization" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-secondary btn-full">
+                        Update Card Details
+                    </button>
+                </form>
+
+                <div class="download-actions" id="download-actions">
+                    <div class="download-card-preview-note">
+                        <span>✨ Ready to save your high-resolution card</span>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-download" id="download-btn">
+                        <span class="download-icon" aria-hidden="true">📥</span>
+                        <span>Download My Card</span>
+                    </button>
+                    <p class="download-subtext">Exports as crisp 300 DPI PNG with verified identity</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-content">
+            <a href="#home" class="footer-brand" aria-label="AstraKsh">
+                <img src="./Assets/Other Assets/Logo.png" alt="AstraKsh" class="footer-logo">
+            </a>
+            <p class="footer-tagline">Awaken Your Legend</p>
+            <p class="footer-note">
+                An original mythic creature universe inspired by Indian epics & folklore.
+            </p>
+            <div class="footer-divider" aria-hidden="true"></div>
+            <p class="footer-copyright">
+                © AstraKsh. The Software Society. All Rights Reserved.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript: local html2canvas avoids tracking prevention blocks -->
+    <script src="./js/html2canvas.min.js" defer></script>
+    <script src="./js/creatures.js" defer></script>
+    <script src="./js/generator.js" defer></script>
+    <script src="./js/card.js" defer></script>
+    <script src="./js/download.js" defer></script>
+    <script src="./js/main.js" defer></script>
+
+</body>
+
+</html>
