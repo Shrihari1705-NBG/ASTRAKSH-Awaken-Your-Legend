@@ -226,9 +226,3 @@ Every participant discovers a legend. Every card tells a story.
 *An interactive creature universe created for HackFusion 2.0.*
 
 </div>
-```
-
-**Two details to check before pushing:**
-
-- Your screenshot doesn't show a `README.md` file yet, so create one in the `Participants-ID-card` root directory.
-- Since `html2canvas.min.js` is inside `js/`, make sure `index.html` loads it from `./js/html2canvas.min.js`, not from the old CDN or a root-level path.
