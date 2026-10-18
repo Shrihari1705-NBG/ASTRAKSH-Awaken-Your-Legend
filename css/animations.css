@@ -157,7 +157,116 @@
     animation: spin 1s linear infinite;
 }
 
-/* 10. Respect reduced-motion settings */
+/* 10. Altar Summoning Overdrive */
+@keyframes altar-overdrive {
+    0% {
+        transform: rotate(0deg) scale(1);
+        box-shadow: 0 0 25px rgba(229, 178, 78, 0.4), inset 0 0 15px rgba(155, 29, 37, 0.4);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.08);
+        box-shadow: 0 0 45px rgba(229, 178, 78, 0.8), 0 0 70px rgba(155, 29, 37, 0.6), inset 0 0 25px rgba(229, 178, 78, 0.6);
+    }
+    100% {
+        transform: rotate(360deg) scale(1);
+        box-shadow: 0 0 25px rgba(229, 178, 78, 0.4), inset 0 0 15px rgba(155, 29, 37, 0.4);
+    }
+}
+
+.altar-disc.is-summoning {
+    animation: altar-overdrive 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
+    border-color: var(--color-primary-light);
+}
+
+/* 11. Mystery Sealed Card Awakening Sequence */
+@keyframes card-awakening-pulse {
+    0%, 100% {
+        box-shadow:
+            0 0 0 1px rgba(252, 226, 152, 0.35),
+            0 0 30px rgba(217, 164, 65, 0.3),
+            0 0 50px rgba(155, 29, 37, 0.4);
+        transform: translateY(0);
+    }
+    50% {
+        box-shadow:
+            0 0 0 2px rgba(252, 226, 152, 0.7),
+            0 0 55px rgba(217, 164, 65, 0.65),
+            0 0 90px rgba(155, 29, 37, 0.7);
+        transform: translateY(-6px);
+    }
+}
+
+@keyframes chakra-spin-cw {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes chakra-spin-ccw {
+    from {
+        transform: rotate(360deg);
+    }
+    to {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes glyph-radiate {
+    0%, 100% {
+        transform: scale(0.9) rotate(0deg);
+        filter: drop-shadow(0 0 12px #E5B24E);
+    }
+    50% {
+        transform: scale(1.25) rotate(180deg);
+        filter: drop-shadow(0 0 28px #FCE198) drop-shadow(0 0 40px #FF4D5A);
+    }
+}
+
+@keyframes scan-beam {
+    0% {
+        top: -10%;
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.85;
+    }
+    80% {
+        opacity: 0.85;
+    }
+    100% {
+        top: 110%;
+        opacity: 0;
+    }
+}
+
+@keyframes mystery-burst {
+    0% {
+        filter: brightness(1) drop-shadow(0 0 0 rgba(255, 230, 163, 0));
+        transform: scale(1);
+    }
+    60% {
+        filter: brightness(2.2) drop-shadow(0 0 60px rgba(255, 230, 163, 0.95));
+        transform: scale(1.04);
+    }
+    100% {
+        filter: brightness(1.2) drop-shadow(0 0 20px rgba(255, 230, 163, 0.3));
+        transform: scale(1);
+    }
+}
+
+@keyframes energy-fill-progress {
+    0% {
+        width: 0%;
+    }
+    100% {
+        width: 100%;
+    }
+}
+
+/* 13. Respect reduced-motion settings */
 @media (prefers-reduced-motion: reduce) {
     .hero-logo,
     .hero-badge,
@@ -172,8 +281,13 @@
     .creature-card__artwork,
     .creature-card[data-tier="veer"] .creature-card__artwork,
     .creature-card[data-tier="divya"] .creature-card__artwork,
-    .spinner {
+    .spinner,
+    .mandala-ring,
+    .loader-emblem,
+    .ritual-chakra,
+    .ritual-glyph {
         animation: none !important;
         transform: none !important;
     }
 }
+

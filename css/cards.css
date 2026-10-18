@@ -280,3 +280,27 @@
         font-size: 18px;
     }
 }
+
+/* Custom Photo Styling */
+.creature-card__image.is-custom-photo {
+    object-fit: cover !important;
+    object-position: center top !important;
+}
+
+.custom-photo-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    padding: 3px 8px;
+    background: rgba(12, 10, 16, 0.88);
+    border: 1px solid var(--gold-primary);
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    color: var(--gold-light);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
