@@ -5,12 +5,9 @@
 ========================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Check for ?reset in URL (e.g. http://localhost:8080/?reset)
-    if (new URLSearchParams(window.location.search).has("reset")) {
-        localStorage.removeItem("astraksh_chances_remaining");
-        localStorage.removeItem("astraksh_saved_creature");
-        localStorage.removeItem("astraksh_participant_name");
-        localStorage.removeItem("astraksh_participant_college");
+    // Check for ?reset or ?clear in URL (e.g. http://localhost:8080/?reset)
+    if (new URLSearchParams(window.location.search).has("reset") || new URLSearchParams(window.location.search).has("clear")) {
+        localStorage.clear();
         window.location.replace(window.location.pathname);
         return;
     }
@@ -22,20 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const STORAGE_KEY_COLLEGE = "astraksh_participant_college";
     const STORAGE_KEY_COLLECTION = "astraksh_card_collection";
     const STORAGE_KEY_ACTIVE_INDEX = "astraksh_active_card_index";
-
-    // Expose quick reset function on window for testing in console
-    window.resetChances = () => {
-        localStorage.removeItem(STORAGE_KEY_CHANCES);
-        localStorage.removeItem(STORAGE_KEY_CREATURE);
-        localStorage.removeItem(STORAGE_KEY_COLLECTION);
-        localStorage.removeItem(STORAGE_KEY_ACTIVE_INDEX);
-        window.location.reload();
-    };
-
-    window.resetAstraKsh = () => {
-        localStorage.clear();
-        window.location.reload();
-    };
 
     const generateButton = document.querySelector("#generate-btn");
     const statusMessage = document.querySelector("#status-message");
@@ -56,13 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const collectionCount = document.querySelector("#collection-count");
     const collectionGrid = document.querySelector("#collection-grid");
 
-    // Photo Customizer UI elements
-    const photoFileInput = document.querySelector("#photo-upload-input");
-    const photoCameraInput = document.querySelector("#photo-camera-input");
-    const uploadPhotoBtn = document.querySelector("#upload-photo-btn");
-    const cameraPhotoBtn = document.querySelector("#camera-photo-btn");
-    const resetArtworkBtn = document.querySelector("#reset-artwork-btn");
-    const photoStatusIndicator = document.querySelector("#photo-status-indicator");
 
     let selectedCreature = null;
     let isAwakening = false;
@@ -284,50 +260,6 @@ document.addEventListener("DOMContentLoaded", () => {
         validateParticipantDetails();
     });
 
-    /**
-     * Resizes and compresses user-provided photos using an off-screen canvas.
-     * Prevents browser localStorage quota crashes and ensures crisp card rendering.
-     */
-    function processImageFile(file, callback) {
-        if (!file || !file.type.startsWith("image/")) {
-            alert("Please select a valid image file.");
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const MAX_DIM = 1000;
-                let width = img.width;
-                let height = img.height;
-
-                if (width > MAX_DIM || height > MAX_DIM) {
-                    if (width > height) {
-                        height = Math.round((height * MAX_DIM) / width);
-                        width = MAX_DIM;
-                    } else {
-                        width = Math.round((width * MAX_DIM) / height);
-                        height = MAX_DIM;
-                    }
-                }
-
-                const canvas = document.createElement("canvas");
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, width, height);
-
-                const compressedDataUrl = canvas.toDataURL("image/jpeg", 0.88);
-                callback(compressedDataUrl);
-            };
-            img.onerror = () => {
-                alert("Unable to process this image file. Please try another image.");
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
 
     /**
      * Persists the collection and current active index to localStorage.
@@ -359,20 +291,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         renderCreatureCard(selectedCreature, {
             name: currentName,
-            college: currentCollege,
-            customImage: currentRecord.customImage
+            college: currentCollege
         });
-
-        // Update photo status indicator
-        if (photoStatusIndicator) {
-            if (currentRecord.customImage) {
-                photoStatusIndicator.innerHTML =
-                    'Current Portrait: <strong>Custom Identity Photo</strong>';
-            } else {
-                photoStatusIndicator.innerHTML =
-                    `Current Portrait: <strong>Mythic Guardian Artwork (${selectedCreature.name})</strong>`;
-            }
-        }
 
         renderCollectionGallery();
         validateParticipantDetails();
@@ -422,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
             item.className = `collection-item${idx === activeCollectionIndex ? " is-active" : ""}`;
             item.setAttribute("data-index", idx);
 
-            const thumbSrc = card.customImage || card.creature.image;
+            const thumbSrc = card.creature.image;
             const tierLower = (card.creature.tier || "prakriti").toLowerCase();
 
             item.innerHTML = `
@@ -458,47 +378,56 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Photo customizer button event listeners
-    uploadPhotoBtn?.addEventListener("click", () => {
-        photoFileInput?.click();
-    });
-
-    cameraPhotoBtn?.addEventListener("click", () => {
-        photoCameraInput?.click();
-    });
-
-    photoFileInput?.addEventListener("change", (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        processImageFile(file, (dataUrl) => {
-            if (cardCollection[activeCollectionIndex]) {
-                cardCollection[activeCollectionIndex].customImage = dataUrl;
-                setActiveCard(activeCollectionIndex);
-            }
-        });
-        photoFileInput.value = "";
-    });
-
-    photoCameraInput?.addEventListener("change", (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-
-        processImageFile(file, (dataUrl) => {
-            if (cardCollection[activeCollectionIndex]) {
-                cardCollection[activeCollectionIndex].customImage = dataUrl;
-                setActiveCard(activeCollectionIndex);
-            }
-        });
-        photoCameraInput.value = "";
-    });
-
-    resetArtworkBtn?.addEventListener("click", () => {
-        if (cardCollection[activeCollectionIndex]) {
-            cardCollection[activeCollectionIndex].customImage = null;
-            setActiveCard(activeCollectionIndex);
+    /**
+     * Resets the entire card collection, restores all awakening chances,
+     * clears participant inputs, and purges all persisted card data.
+     */
+    function resetAllStats(showConfirm = false) {
+        if (showConfirm && !confirm("Are you sure you want to reset your card collection and restore all 3 awakening chances?")) {
+            return;
         }
-    });
+
+        localStorage.removeItem(STORAGE_KEY_CHANCES);
+        localStorage.removeItem(STORAGE_KEY_CREATURE);
+        localStorage.removeItem(STORAGE_KEY_COLLECTION);
+        localStorage.removeItem(STORAGE_KEY_ACTIVE_INDEX);
+        localStorage.removeItem(STORAGE_KEY_NAME);
+        localStorage.removeItem(STORAGE_KEY_COLLEGE);
+
+        cardCollection = [];
+        activeCollectionIndex = 0;
+        selectedCreature = null;
+
+        if (participantNameInput) participantNameInput.value = "";
+        if (collegeNameInput) collegeNameInput.value = "";
+
+        if (creatureResult) creatureResult.hidden = true;
+        if (personalizeSection) personalizeSection.hidden = true;
+        if (downloadActions) downloadActions.hidden = true;
+        if (collectionBar) collectionBar.hidden = true;
+
+        const cardContainer = document.querySelector("#creature-card-container");
+        if (cardContainer) cardContainer.innerHTML = "";
+
+        updateChancesUI(MAX_CHANCES);
+
+        if (statusMessage) {
+            statusMessage.innerHTML = "✦ Card collection reset. All 3 chances restored! Your journey begins anew.";
+        }
+
+        validateParticipantDetails();
+    }
+
+
+
+    // Expose quick reset functions on window for console use
+    window.resetAllStats = () => resetAllStats(false);
+    window.resetChances = () => resetAllStats(false);
+    window.resetAstraKsh = () => {
+        localStorage.clear();
+        window.location.reload();
+    };
+
 
     /**
      * Renders the sealed mythic mystery card inside #creature-card-container during awakening.
@@ -654,7 +583,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const newRecord = {
                 id: "card_" + Date.now(),
                 creature: candidateCreature,
-                customImage: null,
                 awakenedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
             cardCollection.push(newRecord);
@@ -742,6 +670,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initialize state on page load (handles browser refresh)
     (function initializeState() {
+        // Auto-reset when schema/state reset is requested
+        const STORAGE_VERSION_KEY = "astraksh_data_version";
+        const CURRENT_STORAGE_VERSION = "2026.2";
+
+        if (localStorage.getItem(STORAGE_VERSION_KEY) !== CURRENT_STORAGE_VERSION) {
+            localStorage.clear();
+            localStorage.setItem(STORAGE_VERSION_KEY, CURRENT_STORAGE_VERSION);
+        }
+
         // Restore name and college if previously entered
         const savedName = localStorage.getItem(STORAGE_KEY_NAME);
         if (savedName && participantNameInput) {
@@ -777,7 +714,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     cardCollection = [{
                         id: "card_legacy",
                         creature: legacyCreature,
-                        customImage: null,
                         awakenedAt: "Saved"
                     }];
                     activeCollectionIndex = 0;

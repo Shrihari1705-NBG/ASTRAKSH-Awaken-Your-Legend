@@ -40,10 +40,7 @@ function renderCreatureCard(creature, participant = {}) {
 
     const safeName = escapeHTML(participantName);
     const safeCollege = escapeHTML(collegeName);
-
-    const hasCustomPhoto = Boolean(participant.customImage || creature.customImage);
-    const imageSrc = participant.customImage || creature.customImage || creature.image;
-    const photoClass = hasCustomPhoto ? " creature-card__image is-custom-photo" : " creature-card__image";
+    const imageSrc = creature.image;
 
     const cardHTML = `
         <article class="creature-card" data-tier="${creature.tier}">
@@ -62,11 +59,10 @@ function renderCreatureCard(creature, participant = {}) {
 
                 <div class="creature-card__artwork">
                     <img
-                        class="${photoClass}"
+                        class="creature-card__image"
                         src="${escapeHTML(imageSrc)}"
                         alt="${escapeHTML(creature.name)} card artwork"
                     >
-                    ${hasCustomPhoto ? '<span class="custom-photo-badge">📷 Custom Portrait</span>' : ''}
                 </div>
 
                 <p class="creature-card__type">
