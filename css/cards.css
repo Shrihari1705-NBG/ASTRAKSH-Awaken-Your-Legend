@@ -281,3 +281,271 @@
     }
 }
 
+
+/* =========================================
+   3D CARD FLIP SYSTEM
+========================================= */
+
+/* Perspective container — provides the 3D space */
+.card-flip-container {
+    perspective: 1200px;
+    width: min(100%, 420px);
+    margin-inline: auto;
+}
+
+/* The flipper holds front + back; this is what rotates */
+.card-flipper {
+    position: relative;
+    width: 100%;
+    transition: transform 0.75s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transform-style: preserve-3d;
+    cursor: pointer;
+    outline: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+.card-flipper:focus-visible {
+    outline: 2px solid var(--gold-light);
+    outline-offset: 6px;
+    border-radius: 16px;
+}
+
+.card-flipper.is-flipped {
+    transform: rotateY(180deg);
+}
+
+/* Each face is absolutely stacked; backface hidden */
+.card-face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.card-front {
+    position: relative;
+}
+
+.card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transform: rotateY(180deg);
+}
+
+/* Override .creature-card width inside flipper — full-width of flipper */
+.card-flipper > .creature-card {
+    width: 100%;
+}
+
+
+/* =========================================
+   CARD FLIP HINT
+========================================= */
+.card-flip-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 0 4px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    color: rgba(217, 164, 65, 0.55);
+    text-transform: uppercase;
+    transition: color 0.25s ease;
+    animation: flipHintPulse 2.5s ease-in-out infinite;
+}
+
+.card-flipper:hover .card-flip-hint,
+.card-flipper:focus .card-flip-hint {
+    color: rgba(217, 164, 65, 0.9);
+}
+
+.flip-hint-icon {
+    font-size: 14px;
+    display: inline-block;
+    animation: flipHintSpin 3s ease-in-out infinite;
+}
+
+@keyframes flipHintPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+@keyframes flipHintSpin {
+    0%, 80%, 100% { transform: rotate(0deg); }
+    90% { transform: rotate(360deg); }
+}
+
+
+/* =========================================
+   CARD BACK FACE — LORE & DETAILS
+========================================= */
+.card-back__frame {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+}
+
+.card-back__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 18px 20px;
+    text-align: center;
+    gap: 8px;
+}
+
+.card-back__tier-icon {
+    font-size: 38px;
+    line-height: 1;
+    filter: drop-shadow(0 0 14px rgba(217, 164, 65, 0.5));
+    animation: tierIconFloat 3s ease-in-out infinite;
+}
+
+@keyframes tierIconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+}
+
+.card-back__creature-name {
+    color: #FAF5E8;
+    font-family: var(--font-heading);
+    font-size: clamp(22px, 5.5vw, 32px);
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(217, 164, 65, 0.3);
+}
+
+.card-back__tier-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-magic);
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(53, 217, 232, 0.4);
+}
+
+.card-back__divider {
+    width: 60%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(217, 164, 65, 0.5) 30%,
+        rgba(217, 164, 65, 0.7) 50%,
+        rgba(217, 164, 65, 0.5) 70%,
+        transparent 100%
+    );
+    margin: 4px auto;
+}
+
+.card-back__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.card-back__stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--gold-primary);
+}
+
+.card-back__stat-value {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 700;
+    color: #FAF5E8;
+    letter-spacing: 1px;
+    text-shadow: 0 0 12px rgba(217, 164, 65, 0.25);
+}
+
+.card-back__description {
+    font-size: 13px;
+    line-height: 1.55;
+    color: #D6CCE4;
+    max-width: 320px;
+    font-style: italic;
+    padding: 0 8px;
+}
+
+.card-back__inspiration {
+    font-size: 14px;
+    color: #D6CCE4;
+    font-weight: 500;
+}
+
+.card-back__owner-mini {
+    padding: 10px 16px;
+    background: rgba(62, 13, 20, 0.5);
+    border: 1px solid rgba(217, 164, 65, 0.2);
+    border-radius: 8px;
+    margin-top: 2px;
+}
+
+.card-back__owner-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold-primary);
+}
+
+.card-back__owner-name {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    font-weight: 700;
+    color: #FAF5E8;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+    overflow-wrap: anywhere;
+}
+
+.card-back__owner-college {
+    font-size: 11px;
+    color: #D6CCE4;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+    margin-top: 2px;
+}
+
+/* Responsive back-face adjustments */
+@media (max-width: 480px) {
+    .card-back__content {
+        padding: 16px 14px;
+        gap: 8px;
+    }
+
+    .card-back__tier-icon {
+        font-size: 30px;
+    }
+
+    .card-back__stat-value {
+        font-size: 16px;
+    }
+
+    .card-back__description {
+        font-size: 12px;
+    }
+}

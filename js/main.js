@@ -240,11 +240,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const name = participantNameInput?.value.trim() || "Your Name";
         const college = collegeNameInput?.value.trim() || "Your College";
 
-        const ownerNameEl = document.querySelector(".creature-card__owner-name");
-        const ownerCollegeEl = document.querySelector(".creature-card__owner-college");
+        // Update front face owner info
+        document.querySelectorAll(".creature-card__owner-name").forEach(el => el.textContent = name);
+        document.querySelectorAll(".creature-card__owner-college").forEach(el => el.textContent = college);
 
-        if (ownerNameEl) ownerNameEl.textContent = name;
-        if (ownerCollegeEl) ownerCollegeEl.textContent = college;
+        // Update back face owner info
+        document.querySelectorAll(".card-back__owner-name").forEach(el => el.textContent = name);
+        document.querySelectorAll(".card-back__owner-college").forEach(el => el.textContent = college);
     }
 
     // Live update and save participant info while typing

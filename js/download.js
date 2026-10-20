@@ -33,7 +33,12 @@ async function toDataURL(src) {
  * Downloads the currently rendered AstraKsh creature card as a high-resolution PNG.
  */
 async function downloadCreatureCard() {
-    const card = document.querySelector(".creature-card");
+    // Ensure card is showing front face before capture
+    if (typeof flipCardToFront === "function") flipCardToFront();
+    if (typeof clearCardAutoFlip === "function") clearCardAutoFlip();
+
+    // Target the front face specifically for export
+    const card = document.querySelector(".card-front") || document.querySelector(".creature-card");
     const button = document.querySelector("#download-btn");
 
     if (!card) {
@@ -138,6 +143,9 @@ async function downloadCreatureCard() {
                 button.innerHTML = originalButtonHtml;
             }, 2500);
         }
+
+        // Resume auto-flip after download is complete
+        if (typeof startCardAutoFlip === "function") startCardAutoFlip(10000, 10000);
 
         console.log("AstraKsh card exported and downloaded successfully.");
     } catch (error) {
